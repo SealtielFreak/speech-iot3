@@ -9,6 +9,7 @@ from serial import Serial
 import iot3.config
 from iot3.commands import ScriptCommandManager, ScriptCommand
 from iot3.listener import Listener
+from iot3.listener.microphone import find_working_microphone, MicrophoneNoFound
 from iot3.speech import Speech
 
 speech = Speech()
@@ -63,6 +64,7 @@ if __name__ == '__main__':
 
     pretty.install()
 
+    console = iot3.config.console
     manager = ScriptCommandManager()
 
 
@@ -97,6 +99,14 @@ if __name__ == '__main__':
 
 
     def main_loop():
+        console.log("Checking microphone...")
+        working_microphone_index = find_working_microphone()
+
+        if working_microphone_index is None:
+            raise MicrophoneNoFound()
+        else:
+            console.log(f'The index of the working microphone is: {working_microphone_index}')
+
         wish_me()
 
         if not iot3.config.DEBUG_MODE:
@@ -137,3 +147,9 @@ if __name__ == '__main__':
         random_speak(
             ("¡Hasta pronto!", "¡Adios!")
         )
+
+    except MicrophoneNoFound:
+        console.log("No microphone was found that works")
+
+    except Exception as e:
+        console.log(str(e))

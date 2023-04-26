@@ -1,13 +1,12 @@
 import random
 from typing import List
 
-from rich.console import Console
 from speech_recognition import Recognizer, Microphone
 
 import iot3.config
 from iot3.speech import Speech
 
-console = Console()
+console = iot3.config.console
 
 
 class Listener:
